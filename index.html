@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#102b25">
-  <meta name="description" content="Life OS â€” live intentionally, improve continuously, protect what matters.">
+  <meta name="description" content="Life OS — live intentionally, improve continuously, protect what matters.">
   <title>Life OS</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="icon.svg" type="image/svg+xml">
@@ -16,7 +16,7 @@
     <a class="brand" href="#today" aria-label="Life OS home">
       <span class="brand-mark">L</span><span><strong>Life OS</strong><small>The Thornton Way</small></span>
     </a>
-    <button class="icon-button" id="resetDay" title="Start a clean day" aria-label="Reset today's check-ins">â†»</button>
+    <button class="icon-button" id="resetDay" title="Start a clean day" aria-label="Reset today's check-ins">↻</button>
   </header>
 
   <main>
@@ -32,7 +32,7 @@
 
       <article class="card intention-card">
         <label for="greatDay">What would make today a great day?</label>
-        <textarea id="greatDay" rows="2" placeholder="One clear sentenceâ€¦"></textarea>
+        <textarea id="greatDay" rows="2" placeholder="One clear sentence…"></textarea>
       </article>
 
       <section class="section-block">
@@ -41,7 +41,7 @@
       </section>
 
       <section class="section-block">
-        <div class="section-heading"><div><p class="eyebrow">MORNING</p><h2>Set the tone</h2></div><span class="soft-label">6:00â€“7:00</span></div>
+        <div class="section-heading"><div><p class="eyebrow">MORNING</p><h2>Set the tone</h2></div><span class="soft-label">6:00–7:00</span></div>
         <div class="check-grid" id="morningChecks"></div>
       </section>
 
@@ -66,12 +66,12 @@
     <section class="view" id="habits" data-title="Habits">
       <div class="page-intro"><p class="eyebrow">CONTINUE, DON'T RESTART</p><h1>Health & habits</h1><p>Small honest choices, repeated. Never perfection.</p></div>
       <div class="metric-grid">
-        <article class="metric-card alcohol-card"><span class="metric-icon">â—‡</span><small>Alcohol-free streak</small><strong><span id="alcoholStreak">0</span> days</strong><button class="primary-button" id="alcoholToday">Mark today alcohol-free</button></article>
-        <article class="metric-card"><span class="metric-icon">â†˜</span><small>Cigarettes today</small><strong><input id="cigarettesToday" type="number" min="0" max="99" inputmode="numeric" value="0"> <em>/ <span id="cigaretteTargetLabel">10</span></em></strong><div class="stepper"><button id="cigMinus" aria-label="Subtract cigarette">âˆ’</button><button id="cigPlus" aria-label="Add cigarette">+</button></div></article>
+        <article class="metric-card alcohol-card"><span class="metric-icon">◇</span><small>Alcohol-free streak</small><strong><span id="alcoholStreak">0</span> days</strong><button class="primary-button" id="alcoholToday">Mark today alcohol-free</button></article>
+        <article class="metric-card"><span class="metric-icon">↘</span><small>Cigarettes today</small><strong><input id="cigarettesToday" type="number" min="0" max="99" inputmode="numeric" value="0"> <em>/ <span id="cigaretteTargetLabel">10</span></em></strong><div class="stepper"><button id="cigMinus" aria-label="Subtract cigarette">−</button><button id="cigPlus" aria-label="Add cigarette">+</button></div></article>
       </div>
       <article class="card target-card"><div><label for="cigaretteTarget">Current daily target</label><p>Reduce gradually. When the current number feels stable, lower it by one.</p></div><input id="cigaretteTarget" type="number" min="0" max="99" value="10"></article>
       <section class="section-block"><div class="section-heading"><div><p class="eyebrow">NOTICE THE PATTERN</p><h2>Trigger log</h2></div><button class="text-button" id="clearTriggers">Clear</button></div>
-        <form class="card trigger-form" id="triggerForm"><div class="field-row"><div><label for="triggerType">Trigger</label><select id="triggerType"><option>Stress</option><option>Alcohol</option><option>Cigarette</option><option>Food</option><option>YouTube</option><option>Conflict</option><option>Other</option></select></div><div><label for="triggerIntensity">Intensity</label><select id="triggerIntensity"><option>Low</option><option>Medium</option><option>High</option></select></div></div><label for="triggerNote">What happened, and what did you choose?</label><textarea id="triggerNote" rows="3" required placeholder="Dominic criticised me; I paused and went for a walkâ€¦"></textarea><button class="primary-button" type="submit">Add reflection</button></form>
+        <form class="card trigger-form" id="triggerForm"><div class="field-row"><div><label for="triggerType">Trigger</label><select id="triggerType"><option>Stress</option><option>Alcohol</option><option>Cigarette</option><option>Food</option><option>YouTube</option><option>Conflict</option><option>Other</option></select></div><div><label for="triggerIntensity">Intensity</label><select id="triggerIntensity"><option>Low</option><option>Medium</option><option>High</option></select></div></div><label for="triggerNote">What happened, and what did you choose?</label><textarea id="triggerNote" rows="3" required placeholder="Dominic criticised me; I paused and went for a walk…"></textarea><button class="primary-button" type="submit">Add reflection</button></form>
         <div class="timeline" id="triggerList"></div>
       </section>
     </section>
@@ -85,17 +85,17 @@
 
     <section class="view" id="journal" data-title="Journal">
       <div class="page-intro"><p class="eyebrow">MAKE PROGRESS VISIBLE</p><h1>Journal</h1><p>Capture gratitude, lessons and the moments worth remembering.</p></div>
-      <form class="card journal-form" id="journalForm"><label for="journalPrompt">Today's reflection</label><select id="journalPrompt"><option>Three things I'm grateful for</option><option>What went well today?</option><option>What did today teach me?</option><option>How did I live The Thornton Way?</option><option>What am I building for my family?</option></select><label for="journalText">Write your reflection</label><textarea id="journalText" rows="6" required placeholder="Write without judging itâ€¦"></textarea><button class="primary-button" type="submit">Save entry</button></form>
+      <form class="card journal-form" id="journalForm"><label for="journalPrompt">Today's reflection</label><select id="journalPrompt"><option>Three things I'm grateful for</option><option>What went well today?</option><option>What did today teach me?</option><option>How did I live The Thornton Way?</option><option>What am I building for my family?</option></select><label for="journalText">Write your reflection</label><textarea id="journalText" rows="6" required placeholder="Write without judging it…"></textarea><button class="primary-button" type="submit">Save entry</button></form>
       <div class="journal-list" id="journalList"></div>
     </section>
   </main>
 
   <nav class="bottom-nav" aria-label="Main navigation">
-    <a href="#today" class="active"><span>âŒ‚</span><small>Today</small></a>
-    <a href="#way"><span>âœ¦</span><small>The Way</small></a>
-    <a href="#habits"><span>â—Œ</span><small>Habits</small></a>
-    <a href="#goals"><span>â—Ž</span><small>Goals</small></a>
-    <a href="#journal"><span>â‰¡</span><small>Journal</small></a>
+    <a href="#today" class="active"><span>⌂</span><small>Today</small></a>
+    <a href="#way"><span>✦</span><small>The Way</small></a>
+    <a href="#habits"><span>◌</span><small>Habits</small></a>
+    <a href="#goals"><span>◎</span><small>Goals</small></a>
+    <a href="#journal"><span>≡</span><small>Journal</small></a>
   </nav>
   <div class="toast" id="toast" role="status"></div>
   <script src="app.js" defer></script>
