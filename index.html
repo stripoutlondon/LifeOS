@@ -1,9 +1,104 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#101828">
-<title>Life OS</title>
-<style>
-:root{--bg:#f3f5f7;--card:#fff;--ink:#182230;--muted:#667085;--line:#e4e7ec;--dark:#101828;--gold:#b88a35;--green:#16794a;--red:#b42318;--blue:#175cd3}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,system-ui,-apple-system,Segoe UI,Arial,sans-serif}.shell{max-width:980
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#102b25">
+  <meta name="description" content="Life OS â€” live intentionally, improve continuously, protect what matters.">
+  <title>Life OS</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="ambient ambient-one"></div><div class="ambient ambient-two"></div>
+  <header class="topbar">
+    <a class="brand" href="#today" aria-label="Life OS home">
+      <span class="brand-mark">L</span><span><strong>Life OS</strong><small>The Thornton Way</small></span>
+    </a>
+    <button class="icon-button" id="resetDay" title="Start a clean day" aria-label="Reset today's check-ins">â†»</button>
+  </header>
+
+  <main>
+    <section class="view active" id="today" data-title="Today">
+      <div class="hero">
+        <div>
+          <p class="eyebrow" id="dateLabel"></p>
+          <h1>Good <span id="dayPart">morning</span>, Joe.</h1>
+          <p class="hero-copy">Build wealth. Protect your energy. Lead your family. Enjoy the day.</p>
+        </div>
+        <div class="score-ring" id="scoreRing" aria-label="Daily completion score"><strong id="dailyScore">0%</strong><small>today</small></div>
+      </div>
+
+      <article class="card intention-card">
+        <label for="greatDay">What would make today a great day?</label>
+        <textarea id="greatDay" rows="2" placeholder="One clear sentenceâ€¦"></textarea>
+      </article>
+
+      <section class="section-block">
+        <div class="section-heading"><div><p class="eyebrow">FOCUS</p><h2>Today's top 3</h2></div><span class="status-pill" id="priorityStatus">0 of 3</span></div>
+        <div class="priority-list" id="priorityList"></div>
+      </section>
+
+      <section class="section-block">
+        <div class="section-heading"><div><p class="eyebrow">MORNING</p><h2>Set the tone</h2></div><span class="soft-label">6:00â€“7:00</span></div>
+        <div class="check-grid" id="morningChecks"></div>
+      </section>
+
+      <section class="section-block">
+        <div class="section-heading"><div><p class="eyebrow">EVENING</p><h2>Close the day</h2></div><span class="soft-label">2 minutes</span></div>
+        <article class="card review-card">
+          <div class="slider-row"><label for="energy">Energy <strong id="energyValue">7</strong>/10</label><input id="energy" type="range" min="1" max="10" value="7"></div>
+          <div class="slider-row"><label for="mood">Calm & mood <strong id="moodValue">7</strong>/10</label><input id="mood" type="range" min="1" max="10" value="7"></div>
+          <label for="dailyWin">Today's win</label><textarea id="dailyWin" rows="2" placeholder="What are you proud of?"></textarea>
+          <label for="tinyStep">Tomorrow's tiny step</label><textarea id="tinyStep" rows="2" placeholder="Make it small enough to succeed."></textarea>
+        </article>
+      </section>
+      <p class="saved-note" id="savedNote">Saved on this device</p>
+    </section>
+
+    <section class="view" id="way" data-title="The Way">
+      <div class="page-intro"><p class="eyebrow">IDENTITY BEFORE ACTIVITY</p><h1>The Thornton Way</h1><p>A family code to live, teach and remember.</p></div>
+      <article class="principles-card"><div class="crest">T</div><ol id="thorntonPrinciples"></ol><p class="motto">Build wisely. Love deeply. Live fully.</p></article>
+      <div class="philosophy-grid" id="philosophyGrid"></div>
+    </section>
+
+    <section class="view" id="habits" data-title="Habits">
+      <div class="page-intro"><p class="eyebrow">CONTINUE, DON'T RESTART</p><h1>Health & habits</h1><p>Small honest choices, repeated. Never perfection.</p></div>
+      <div class="metric-grid">
+        <article class="metric-card alcohol-card"><span class="metric-icon">â—‡</span><small>Alcohol-free streak</small><strong><span id="alcoholStreak">0</span> days</strong><button class="primary-button" id="alcoholToday">Mark today alcohol-free</button></article>
+        <article class="metric-card"><span class="metric-icon">â†˜</span><small>Cigarettes today</small><strong><input id="cigarettesToday" type="number" min="0" max="99" inputmode="numeric" value="0"> <em>/ <span id="cigaretteTargetLabel">10</span></em></strong><div class="stepper"><button id="cigMinus" aria-label="Subtract cigarette">âˆ’</button><button id="cigPlus" aria-label="Add cigarette">+</button></div></article>
+      </div>
+      <article class="card target-card"><div><label for="cigaretteTarget">Current daily target</label><p>Reduce gradually. When the current number feels stable, lower it by one.</p></div><input id="cigaretteTarget" type="number" min="0" max="99" value="10"></article>
+      <section class="section-block"><div class="section-heading"><div><p class="eyebrow">NOTICE THE PATTERN</p><h2>Trigger log</h2></div><button class="text-button" id="clearTriggers">Clear</button></div>
+        <form class="card trigger-form" id="triggerForm"><div class="field-row"><div><label for="triggerType">Trigger</label><select id="triggerType"><option>Stress</option><option>Alcohol</option><option>Cigarette</option><option>Food</option><option>YouTube</option><option>Conflict</option><option>Other</option></select></div><div><label for="triggerIntensity">Intensity</label><select id="triggerIntensity"><option>Low</option><option>Medium</option><option>High</option></select></div></div><label for="triggerNote">What happened, and what did you choose?</label><textarea id="triggerNote" rows="3" required placeholder="Dominic criticised me; I paused and went for a walkâ€¦"></textarea><button class="primary-button" type="submit">Add reflection</button></form>
+        <div class="timeline" id="triggerList"></div>
+      </section>
+    </section>
+
+    <section class="view" id="goals" data-title="Goals">
+      <div class="page-intro"><p class="eyebrow">90-DAY DIRECTION</p><h1>Goals that build freedom</h1><p>Outcomes, not an endless task list.</p></div>
+      <div class="goal-progress card"><div><strong id="goalPercent">0%</strong><span>complete</span></div><div class="progress-track"><i id="goalProgress"></i></div></div>
+      <form class="card goal-form" id="goalForm"><div class="field-row"><div><label for="goalArea">Area</label><select id="goalArea"><option>Family</option><option>Health</option><option>Financial freedom</option><option>Business</option><option>Property</option><option>Personal</option></select></div><div class="grow"><label for="goalText">Outcome</label><input id="goalText" required placeholder="What does done look like?"></div></div><button class="primary-button" type="submit">Add goal</button></form>
+      <div class="goal-list" id="goalList"></div>
+    </section>
+
+    <section class="view" id="journal" data-title="Journal">
+      <div class="page-intro"><p class="eyebrow">MAKE PROGRESS VISIBLE</p><h1>Journal</h1><p>Capture gratitude, lessons and the moments worth remembering.</p></div>
+      <form class="card journal-form" id="journalForm"><label for="journalPrompt">Today's reflection</label><select id="journalPrompt"><option>Three things I'm grateful for</option><option>What went well today?</option><option>What did today teach me?</option><option>How did I live The Thornton Way?</option><option>What am I building for my family?</option></select><label for="journalText">Write your reflection</label><textarea id="journalText" rows="6" required placeholder="Write without judging itâ€¦"></textarea><button class="primary-button" type="submit">Save entry</button></form>
+      <div class="journal-list" id="journalList"></div>
+    </section>
+  </main>
+
+  <nav class="bottom-nav" aria-label="Main navigation">
+    <a href="#today" class="active"><span>âŒ‚</span><small>Today</small></a>
+    <a href="#way"><span>âœ¦</span><small>The Way</small></a>
+    <a href="#habits"><span>â—Œ</span><small>Habits</small></a>
+    <a href="#goals"><span>â—Ž</span><small>Goals</small></a>
+    <a href="#journal"><span>â‰¡</span><small>Journal</small></a>
+  </nav>
+  <div class="toast" id="toast" role="status"></div>
+  <script src="app.js" defer></script>
+</body>
+</html>
+
