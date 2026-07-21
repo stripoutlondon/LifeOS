@@ -32,7 +32,7 @@
 
       <article class="card intention-card">
         <label for="greatDay">What would make today a great day?</label>
-        <textarea id="greatDay" rows="2" placeholder="One clear sentence…"></textarea>
+        <textarea id="greatDay" rows="2" data-voice-label="what would make today a great day" placeholder="One clear sentence…"></textarea>
       </article>
 
       <section class="section-block">
@@ -50,8 +50,8 @@
         <article class="card review-card">
           <div class="slider-row"><label for="energy">Energy <strong id="energyValue">7</strong>/10</label><input id="energy" type="range" min="1" max="10" value="7"></div>
           <div class="slider-row"><label for="mood">Calm & mood <strong id="moodValue">7</strong>/10</label><input id="mood" type="range" min="1" max="10" value="7"></div>
-          <label for="dailyWin">Today's win</label><textarea id="dailyWin" rows="2" placeholder="What are you proud of?"></textarea>
-          <label for="tinyStep">Tomorrow's tiny step</label><textarea id="tinyStep" rows="2" placeholder="Make it small enough to succeed."></textarea>
+          <label for="dailyWin">Today's win</label><textarea id="dailyWin" rows="2" data-voice-label="today's win" placeholder="What are you proud of?"></textarea>
+          <label for="tinyStep">Tomorrow's tiny step</label><textarea id="tinyStep" rows="2" data-voice-label="tomorrow's tiny step" placeholder="Make it small enough to succeed."></textarea>
         </article>
       </section>
       <p class="saved-note" id="savedNote">Saved on this device</p>
@@ -71,7 +71,7 @@
       </div>
       <article class="card target-card"><div><label for="cigaretteTarget">Current daily target</label><p>Reduce gradually. When the current number feels stable, lower it by one.</p></div><input id="cigaretteTarget" type="number" min="0" max="99" value="10"></article>
       <section class="section-block"><div class="section-heading"><div><p class="eyebrow">NOTICE THE PATTERN</p><h2>Trigger log</h2></div><button class="text-button" id="clearTriggers">Clear</button></div>
-        <form class="card trigger-form" id="triggerForm"><div class="field-row"><div><label for="triggerType">Trigger</label><select id="triggerType"><option>Stress</option><option>Alcohol</option><option>Cigarette</option><option>Food</option><option>YouTube</option><option>Conflict</option><option>Other</option></select></div><div><label for="triggerIntensity">Intensity</label><select id="triggerIntensity"><option>Low</option><option>Medium</option><option>High</option></select></div></div><label for="triggerNote">What happened, and what did you choose?</label><textarea id="triggerNote" rows="3" required placeholder="Dominic criticised me; I paused and went for a walk…"></textarea><button class="primary-button" type="submit">Add reflection</button></form>
+        <form class="card trigger-form" id="triggerForm"><div class="field-row"><div><label for="triggerType">Trigger</label><select id="triggerType"><option>Stress</option><option>Alcohol</option><option>Cigarette</option><option>Food</option><option>YouTube</option><option>Conflict</option><option>Other</option></select></div><div><label for="triggerIntensity">Intensity</label><select id="triggerIntensity"><option>Low</option><option>Medium</option><option>High</option></select></div></div><label for="triggerNote">What happened, and what did you choose?</label><textarea id="triggerNote" rows="3" required data-voice-label="trigger reflection" placeholder="Dominic criticised me; I paused and went for a walk…"></textarea><button class="primary-button" type="submit">Add reflection</button></form>
         <div class="timeline" id="triggerList"></div>
       </section>
     </section>
@@ -79,13 +79,13 @@
     <section class="view" id="goals" data-title="Goals">
       <div class="page-intro"><p class="eyebrow">90-DAY DIRECTION</p><h1>Goals that build freedom</h1><p>Outcomes, not an endless task list.</p></div>
       <div class="goal-progress card"><div><strong id="goalPercent">0%</strong><span>complete</span></div><div class="progress-track"><i id="goalProgress"></i></div></div>
-      <form class="card goal-form" id="goalForm"><div class="field-row"><div><label for="goalArea">Area</label><select id="goalArea"><option>Family</option><option>Health</option><option>Financial freedom</option><option>Business</option><option>Property</option><option>Personal</option></select></div><div class="grow"><label for="goalText">Outcome</label><input id="goalText" required placeholder="What does done look like?"></div></div><button class="primary-button" type="submit">Add goal</button></form>
+      <form class="card goal-form" id="goalForm"><div class="field-row"><div><label for="goalArea">Area</label><select id="goalArea"><option>Family</option><option>Health</option><option>Financial freedom</option><option>Business</option><option>Property</option><option>Personal</option></select></div><div class="grow"><label for="goalText">Outcome</label><input id="goalText" required data-voice-label="goal outcome" placeholder="What does done look like?"></div></div><button class="primary-button" type="submit">Add goal</button></form>
       <div class="goal-list" id="goalList"></div>
     </section>
 
     <section class="view" id="journal" data-title="Journal">
       <div class="page-intro"><p class="eyebrow">MAKE PROGRESS VISIBLE</p><h1>Journal</h1><p>Capture gratitude, lessons and the moments worth remembering.</p></div>
-      <form class="card journal-form" id="journalForm"><label for="journalPrompt">Today's reflection</label><select id="journalPrompt"><option>Three things I'm grateful for</option><option>What went well today?</option><option>What did today teach me?</option><option>How did I live The Thornton Way?</option><option>What am I building for my family?</option></select><label for="journalText">Write your reflection</label><textarea id="journalText" rows="6" required placeholder="Write without judging it…"></textarea><button class="primary-button" type="submit">Save entry</button></form>
+      <form class="card journal-form" id="journalForm"><label for="journalPrompt">Today's reflection</label><select id="journalPrompt"><option>Three things I'm grateful for</option><option>What went well today?</option><option>What did today teach me?</option><option>How did I live The Thornton Way?</option><option>What am I building for my family?</option></select><label for="journalText">Write your reflection</label><textarea id="journalText" rows="6" required data-voice-label="journal reflection" placeholder="Write without judging it…"></textarea><button class="primary-button" type="submit">Save entry</button></form>
       <div class="journal-list" id="journalList"></div>
     </section>
   </main>
@@ -101,4 +101,3 @@
   <script src="app.js" defer></script>
 </body>
 </html>
-
