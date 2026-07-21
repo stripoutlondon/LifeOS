@@ -7,7 +7,7 @@ const duplicateIds = [...new Set(ids.filter((id,index)=>ids.indexOf(id)!==index)
 const usedIds = [...app.matchAll(/getElementById\('([^']+)'\)/g)].map(match=>match[1]);
 const missingIds = [...new Set(usedIds.filter(id=>!ids.includes(id)))];
 
-for (const asset of ['privacy.html','support.html','manifest.webmanifest']) {
+for (const asset of ['privacy.html','support.html','manifest.webmanifest','commercial.css']) {
   if (!(await readFile(asset,'utf8')).trim()) throw new Error(`${asset} is empty`);
 }
 
