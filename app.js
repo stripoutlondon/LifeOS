@@ -1,5 +1,8 @@
-const PROFILE_STORAGE_KEY = 'life-os-commercial-profiles-v1';
-const profileDataKey = id => `life-os-commercial-data:${id}`;
+// Thornton Latest deliberately keeps the original personalised storage keys.
+// This lets Joe upgrade the live app without losing profiles, goals or journals.
+const LEGACY_STORAGE_KEY = 'life-os-v1';
+const PROFILE_STORAGE_KEY = 'life-os-profiles-v1';
+const profileDataKey = id => `life-os-data:${id}`;
 const todayKey = () => new Date().toISOString().slice(0, 10);
 const defaults = {
   date: todayKey(), greatDay: '', priorities: ['', '', ''], priorityDone: [false, false, false],
@@ -46,10 +49,36 @@ let cloudSession = null;
 let familySpace = null;
 let pendingFreshCloudProfile = false;
 function uid(){return globalThis.crypto?.randomUUID?.()||`profile-${Date.now()}-${Math.random().toString(16).slice(2)}`}
+function normalizeProfile(profile){
+  const normalized={...profile};
+  if(!normalized.lifeMode)normalized.lifeMode=normalized.familyName?.trim()?'both':'personal';
+  if(!normalized.wayName&&normalized.familyName?.trim().toLowerCase()==='thornton')normalized.wayName='The Thornton Way';
+  if(!normalized.purpose)normalized.purpose='Build wealth, protect your energy, lead your family and enjoy the day.';
+  if(!Array.isArray(normalized.principles)||!normalized.principles.length)normalized.principles=[...defaultPrinciples];
+  normalized.routineConfig={
+    morning:normalized.routineConfig?.morning?.length?normalized.routineConfig.morning:structuredClone(defaultRoutineConfig.morning),
+    daytime:normalized.routineConfig?.daytime?.length?normalized.routineConfig.daytime:structuredClone(defaultRoutineConfig.daytime),
+    evening:{...defaultRoutineConfig.evening,...(normalized.routineConfig?.evening||{})}
+  };
+  normalized.trackers={alcohol:normalized.trackers?.alcohol!==false,cigarettes:normalized.trackers?.cigarettes!==false};
+  return normalized;
+}
 function loadProfileRegistry(){
   try{
     const saved=JSON.parse(localStorage.getItem(PROFILE_STORAGE_KEY));
-    if(saved?.items?.length)return saved;
+    if(saved?.items?.length){
+      const normalized={...saved,items:saved.items.map(normalizeProfile)};
+      localStorage.setItem(PROFILE_STORAGE_KEY,JSON.stringify(normalized));
+      return normalized;
+    }
+    const legacy=JSON.parse(localStorage.getItem(LEGACY_STORAGE_KEY));
+    if(legacy){
+      const migrated=normalizeProfile({id:'joe-thornton',name:'Joe',familyName:'Thornton',wayName:'The Thornton Way',lifeMode:'both',purpose:'Build wealth, protect your energy, lead your family and enjoy the day.',principles:[...defaultPrinciples],createdAt:new Date().toISOString()});
+      const registry={activeId:migrated.id,items:[migrated]};
+      localStorage.setItem(profileDataKey(migrated.id),JSON.stringify(merge(defaults,legacy)));
+      localStorage.setItem(PROFILE_STORAGE_KEY,JSON.stringify(registry));
+      return registry;
+    }
   }catch{}
   return {activeId:null,items:[]};
 }

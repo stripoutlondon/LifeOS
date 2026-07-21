@@ -4,9 +4,13 @@ A zero-build, mobile-first personal operating system centred on identity, relati
 
 The commercial beta includes neutral onboarding, personal or family modes, editable purpose and principles, fully editable morning/daytime/evening routines, optional specialist trackers, user-created daily habits, seven-day insights, private cloud accounts, invitation-only family spaces, separate personal goals/journals/health data, shared family principles, voice input, downloadable profile backup and in-app account deletion.
 
+## Thornton Latest
+
+The `thornton-latest` edition combines Joe's established personalised data with the current configurable routines, daytime productivity, custom habits and weekly insights. It intentionally reads the original `life-os-profiles-v1`, `life-os-data:*` and legacy `life-os-v1` browser keys, then fills in new profile settings without replacing existing content.
+
 ## Preserved personalised edition
 
-Joe's working Thornton prototype is preserved independently on the `thornton-prototype` branch and at the immutable `thornton-prototype-v1.0` tag. The commercial build lives on `commercial-v1` and uses different browser-storage keys, so testing it cannot overwrite or import the personalised prototype.
+Joe's original working Thornton prototype remains preserved independently on the `thornton-prototype` branch and at the immutable `thornton-prototype-v1.0` tag. The commercial build lives on `commercial-v1` and uses different browser-storage keys, so commercial testing cannot overwrite or import the personalised app.
 
 ## Private beta
 

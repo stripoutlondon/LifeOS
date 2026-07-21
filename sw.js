@@ -1,4 +1,4 @@
-const CACHE='life-os-commercial-v2';
+const CACHE='life-os-thornton-latest-v1';
 const ASSETS=['./','./index.html','./privacy.html','./support.html','./styles.css','./commercial.css','./app.js','./cloud-config.js','./cloud.js','./native.js','./manifest.webmanifest','./icon.svg'];
 self.addEventListener('install',event=>event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(ASSETS))));
 self.addEventListener('activate',event=>event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(key=>key!==CACHE).map(key=>caches.delete(key))))));
