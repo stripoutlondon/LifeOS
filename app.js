@@ -29,6 +29,7 @@ let profileRegistry = loadProfileRegistry();
 let activeProfile = profileRegistry.items.find(item=>item.id===profileRegistry.activeId)||null;
 let state = activeProfile ? loadProfileState(activeProfile.id) : structuredClone(defaults);
 let activeRecognition = null;
+let voiceLifecycleReady = false;
 let cloudSession = null;
 let familySpace = null;
 function uid(){return globalThis.crypto?.randomUUID?.()||`profile-${Date.now()}-${Math.random().toString(16).slice(2)}`}
@@ -111,17 +112,46 @@ function setupVoiceInputs(root=document){
     button.addEventListener('click',()=>startVoiceInput(field,button));
     field.insertAdjacentElement('afterend',button);
   });
+  if(!voiceLifecycleReady){
+    voiceLifecycleReady=true;
+    document.addEventListener('visibilitychange',()=>{if(document.hidden)stopVoiceInput({abort:true})});
+    window.addEventListener('pagehide',()=>stopVoiceInput({abort:true}));
+  }
+}
+function setVoiceButton(button,listening){
+  button.classList.toggle('listening',listening);
+  button.querySelector('.voice-label').textContent=listening?'Stop':'Speak';
+  button.setAttribute('aria-label',listening?'Stop voice input':`Dictate ${button.dataset.voiceLabel}`);
+  button.title=listening?'Stop voice input':`Dictate ${button.dataset.voiceLabel}`;
+  if(listening)button.setAttribute('aria-pressed','true');else button.removeAttribute('aria-pressed');
+}
+function finishVoiceInput(recognition,{focus=true}={}){
+  clearTimeout(recognition.voiceTimeout);
+  const ownsButton=recognition.voiceButton.voiceRecognition===recognition;
+  if(ownsButton){setVoiceButton(recognition.voiceButton,false);recognition.voiceButton.voiceRecognition=null}
+  if(activeRecognition===recognition)activeRecognition=null;
+  if(focus&&ownsButton)recognition.voiceField.focus();
+}
+function stopVoiceInput({abort=false,notify=false}={}){
+  const recognition=activeRecognition;if(!recognition)return false;
+  recognition.stoppedByUser=!abort;
+  try{abort?recognition.abort():recognition.stop()}catch{}
+  finishVoiceInput(recognition,{focus:!abort});
+  if(notify)toast('Voice input stopped. Your words have been kept.');
+  return true;
 }
 function startVoiceInput(field,button){
   const Recognition=window.SpeechRecognition||window.webkitSpeechRecognition;
   if(!Recognition){field.focus();toast('Use the microphone on your phone keyboard to dictate here.');return}
-  if(activeRecognition){activeRecognition.stop();activeRecognition=null}
-  const recognition=new Recognition();activeRecognition=recognition;recognition.lang='en-GB';recognition.continuous=false;recognition.interimResults=true;
-  const original=field.value.trim();button.classList.add('listening');button.querySelector('.voice-label').textContent='Listening…';button.setAttribute('aria-pressed','true');
+  if(activeRecognition?.voiceButton===button){stopVoiceInput({notify:true});return}
+  if(activeRecognition)stopVoiceInput({abort:true});
+  const recognition=new Recognition();activeRecognition=recognition;recognition.lang='en-GB';recognition.continuous=false;recognition.interimResults=true;recognition.voiceButton=button;recognition.voiceField=field;button.voiceRecognition=recognition;
+  const original=field.value.trim();button.dataset.voiceLabel=button.dataset.voiceLabel||button.getAttribute('aria-label').replace(/^Dictate /,'');setVoiceButton(button,true);
   recognition.onresult=event=>{let words='';for(let i=0;i<event.results.length;i++)words+=event.results[i][0].transcript;field.value=`${original}${original&&words?' ':''}${words}`.trim();field.dispatchEvent(new Event('input',{bubbles:true}))};
-  recognition.onerror=event=>{if(event.error==='not-allowed'||event.error==='service-not-allowed')toast('Microphone access was not allowed. You can still use keyboard dictation.');else if(event.error!=='aborted')toast('I could not hear that. Tap Speak and try again.')};
-  recognition.onend=()=>{button.classList.remove('listening');button.querySelector('.voice-label').textContent='Speak';button.removeAttribute('aria-pressed');if(activeRecognition===recognition)activeRecognition=null;field.focus()};
-  try{recognition.start()}catch{button.classList.remove('listening');toast('Voice input is already active.')}
+  recognition.onerror=event=>{if(event.error==='not-allowed'||event.error==='service-not-allowed')toast('Microphone access was not allowed. You can still use keyboard dictation.');else if(event.error!=='aborted'&&!recognition.stoppedByUser)toast('I could not hear that. Tap Speak and try again.');finishVoiceInput(recognition)};
+  recognition.onend=()=>finishVoiceInput(recognition);
+  recognition.voiceTimeout=setTimeout(()=>{if(activeRecognition===recognition){stopVoiceInput();toast('Voice input stopped after 45 seconds. Your words have been kept.')}},45000);
+  try{recognition.start()}catch{finishVoiceInput(recognition);toast('Voice input could not start. Please tap Speak and try again.')}
 }
 function showOnboarding(canCancel=false){
   const overlay=document.getElementById('onboarding');overlay.hidden=false;document.body.classList.add('modal-open');
