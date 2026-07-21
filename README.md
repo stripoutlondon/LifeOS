@@ -8,6 +8,10 @@ The commercial beta includes neutral onboarding, personal or family modes, edita
 
 Joe's working Thornton prototype is preserved independently on the `thornton-prototype` branch and at the immutable `thornton-prototype-v1.0` tag. The commercial build lives on `commercial-v1` and uses different browser-storage keys, so testing it cannot overwrite or import the personalised prototype.
 
+## Private beta
+
+The commercial branch is deployed separately at https://life-os-private-beta.netlify.app. See `docs/PRIVATE_BETA.md` for tester setup, cloud readiness and the verified privacy boundaries.
+
 ## Run locally
 
 Serve the folder with any static server, for example:
