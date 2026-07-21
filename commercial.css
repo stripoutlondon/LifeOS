@@ -1,0 +1,12 @@
+.daytime-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.daytime-check{padding:16px;display:grid;grid-template-columns:auto 1fr auto;align-items:start;gap:12px;cursor:pointer}
+.daytime-check>span{width:34px;height:34px;border-radius:11px;background:var(--sage);display:grid;place-items:center;color:var(--green);font-size:18px}
+.daytime-check strong{display:block;font-size:14px}
+.daytime-check p{margin:4px 0 0;color:var(--muted);font-size:12px}
+.daytime-check.done{background:#e7eee9;border-color:#b8cec4}
+.daytime-notes{padding:20px;margin-top:10px;display:grid;gap:10px}
+.daytime-notes label{font-size:13px;font-weight:750}
+.daytime-notes textarea{border-bottom:1px solid var(--line);border-radius:0;padding-bottom:12px}
+.choice-stack{display:grid;gap:10px;margin-top:18px}
+.choice-stack .text-button{margin-top:2px}
+@media(max-width:700px){.daytime-grid{grid-template-columns:1fr}.daytime-check{align-items:center}.daytime-check p{display:none}}

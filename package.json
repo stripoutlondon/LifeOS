@@ -1,10 +1,10 @@
 {
   "name": "life-os",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "private": true,
   "description": "A personal and family operating system.",
   "scripts": {
-    "check": "node --check app.js && node --check native.js && node --check cloud.js && node scripts/check-static.mjs && node scripts/test-voice.mjs",
+    "check": "node --check app.js && node --check native.js && node --check cloud.js && node scripts/check-static.mjs && node scripts/test-voice.mjs && node scripts/test-commercial.mjs",
     "native:assets": "node scripts/prepare-native.mjs",
     "native:add:ios": "npm run native:assets && cap add ios",
     "native:sync:ios": "npm run native:assets && cap sync ios",
