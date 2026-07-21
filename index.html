@@ -9,6 +9,7 @@
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="icon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="styles.css">
+  <style>.legal-links{display:flex;justify-content:center;gap:.65rem;grid-column:1/-1;margin:0 0 5.5rem;color:var(--muted);font-size:.84rem}.legal-links a{color:inherit;text-decoration:none}.legal-links a:hover{text-decoration:underline}</style>
 </head>
 <body>
   <div class="ambient ambient-one"></div><div class="ambient ambient-two"></div>
@@ -104,7 +105,9 @@
         </form>
         <article class="card share-card"><p class="eyebrow">INVITE OTHERS</p><h2>Share Life OS</h2><p>Friends can create their own completely separate Life OS. Their information will never appear in yours.</p><button class="secondary-button" id="shareLifeOS" type="button">Share invitation</button></article>
         <article class="card account-card"><p class="eyebrow">THIS DEVICE</p><h2>Profiles & backup</h2><p>Create another private profile on this device, or download a backup before moving phones.</p><div class="button-row"><button class="secondary-button" id="addProfile" type="button">Add profile</button><button class="secondary-button" id="exportProfile" type="button">Download backup</button><button class="danger-button" id="deleteProfile" type="button">Delete current profile</button></div><div class="profile-list" id="profileList"></div></article>
-        <article class="card cloud-card"><div><p class="eyebrow">CLOUD READY</p><h2>Accounts and family spaces</h2><p>The app is prepared for secure sign-in, cross-device sync and invitation-only family sharing. Connecting the cloud service is the next deployment step.</p></div><span class="status-pill">Local-first beta</span></article>
+        <article class="card cloud-card"><div><p class="eyebrow">PRIVATE CLOUD</p><h2>Account & synchronisation</h2><p id="cloudStatus">Your profile is safe on this device. Connect an account to back it up and use it on your other devices.</p></div><div class="cloud-actions"><span class="status-pill" id="cloudBadge">Local only</span><button class="secondary-button" id="cloudConnect" type="button">Connect cloud</button><button class="text-button" id="cloudSignOut" type="button" hidden>Sign out</button><button class="text-button" id="cloudDelete" type="button" hidden>Delete cloud account</button></div></article>
+        <article class="card family-cloud-card" id="familyCloudCard" hidden><p class="eyebrow">SHARED BY CHOICE</p><h2>Family space</h2><p id="familyCloudStatus">Create or join a family space to share your family principles while keeping goals, journals and health information private.</p><div class="family-setup" id="familySetup"><label for="familySpaceName">Create a family space</label><div class="inline-action"><input id="familySpaceName" placeholder="The Thornton Way"><button class="secondary-button" id="createFamilySpace" type="button">Create</button></div><span>or</span><label for="familyInviteCode">Join with an invitation code</label><div class="inline-action"><input id="familyInviteCode" autocapitalize="characters" placeholder="Invitation code"><button class="secondary-button" id="joinFamilySpace" type="button">Join</button></div></div><div class="family-connected" id="familyConnected" hidden><strong id="connectedFamilyName"></strong><p>Family principles are shared. Everything else remains private.</p><div class="inline-action"><code id="familyShareCode"></code><button class="secondary-button" id="copyFamilyCode" type="button">Copy invitation</button></div></div></article>
+        <p class="legal-links"><a href="privacy.html">Privacy</a><span>·</span><a href="support.html">Support</a></p>
       </div>
     </section>
   </main>
@@ -119,7 +122,7 @@
   <div class="onboarding" id="onboarding" hidden>
     <div class="onboarding-backdrop"></div>
     <section class="onboarding-panel" role="dialog" aria-modal="true" aria-labelledby="onboardingTitle">
-      <div class="onboarding-mark">L</div><p class="eyebrow">WELCOME TO LIFE OS</p><h1 id="onboardingTitle">Build a life that feels like yours.</h1><p>Start with your identity. You can change everything later.</p>
+      <div class="onboarding-mark">L</div><p class="eyebrow">WELCOME TO LIFE OS</p><h1 id="onboardingTitle">Build a life that feels like yours.</h1><p>Start with your identity. You can change everything later. Your private entries are never shared with family members.</p>
       <form id="onboardingForm">
         <div class="field-row"><div><label for="onboardingName">Your first name</label><input id="onboardingName" required autocomplete="given-name" placeholder="e.g. Olga"></div><div><label for="onboardingFamily">Family name</label><input id="onboardingFamily" required autocomplete="family-name" placeholder="e.g. Thornton"></div></div>
         <label for="onboardingPurpose">What matters most to you?</label><textarea id="onboardingPurpose" rows="3" data-voice-label="what matters most to you" placeholder="Family, health, freedom, purpose…"></textarea>
@@ -129,7 +132,15 @@
       <button class="text-button onboarding-cancel" id="onboardingCancel" type="button" hidden>Cancel</button>
     </section>
   </div>
+  <div class="cloud-auth" id="cloudAuth" hidden>
+    <div class="onboarding-backdrop"></div>
+    <section class="cloud-auth-panel" role="dialog" aria-modal="true" aria-labelledby="cloudAuthTitle"><p class="eyebrow">SECURE SIGN-IN</p><h1 id="cloudAuthTitle">Back up your Life OS</h1><p>Enter your email and we’ll send you a secure sign-in link. No password required.</p><form id="cloudAuthForm"><label for="cloudEmail">Email address</label><input id="cloudEmail" type="email" required autocomplete="email" placeholder="you@example.com"><button class="primary-button" type="submit">Email me a sign-in link</button></form><button class="text-button" id="cloudAuthCancel" type="button">Cancel</button></section>
+  </div>
   <div class="toast" id="toast" role="status"></div>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+  <script src="cloud-config.js" defer></script>
+  <script src="cloud.js" defer></script>
+  <script src="native.js" defer></script>
   <script src="app.js" defer></script>
 </body>
 </html>

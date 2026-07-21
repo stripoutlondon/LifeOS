@@ -1,0 +1,9 @@
+node_modules/
+www/
+.env
+.env.*
+ios/App/App/public/
+ios/App/App/capacitor.config.json
+ios/App/Pods/
+ios/App/build/
+**/xcuserdata/

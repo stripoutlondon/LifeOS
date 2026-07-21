@@ -1,0 +1,22 @@
+{
+  "name": "life-os",
+  "version": "0.4.0",
+  "private": true,
+  "description": "A personal and family operating system.",
+  "scripts": {
+    "check": "node --check app.js && node --check native.js && node --check cloud.js && node scripts/check-static.mjs",
+    "native:assets": "node scripts/prepare-native.mjs",
+    "native:add:ios": "npm run native:assets && cap add ios",
+    "native:sync:ios": "npm run native:assets && cap sync ios",
+    "native:open:ios": "cap open ios"
+  },
+  "dependencies": {
+    "@capacitor/core": "^8.0.0",
+    "@capacitor/haptics": "^8.0.0",
+    "@capacitor/ios": "^8.0.0",
+    "@capacitor/local-notifications": "^8.0.0"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^8.0.0"
+  }
+}

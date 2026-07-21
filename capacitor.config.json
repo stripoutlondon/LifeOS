@@ -1,0 +1,10 @@
+{
+  "appId": "com.stripoutlondon.lifeos",
+  "appName": "Life OS",
+  "webDir": "www",
+  "backgroundColor": "#f5f1e8",
+  "ios": {
+    "contentInset": "automatic",
+    "preferredContentMode": "mobile"
+  }
+}

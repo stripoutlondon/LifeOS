@@ -29,6 +29,8 @@ let profileRegistry = loadProfileRegistry();
 let activeProfile = profileRegistry.items.find(item=>item.id===profileRegistry.activeId)||null;
 let state = activeProfile ? loadProfileState(activeProfile.id) : structuredClone(defaults);
 let activeRecognition = null;
+let cloudSession = null;
+let familySpace = null;
 function uid(){return globalThis.crypto?.randomUUID?.()||`profile-${Date.now()}-${Math.random().toString(16).slice(2)}`}
 function loadProfileRegistry(){
   try{
@@ -48,7 +50,7 @@ function loadProfileRegistry(){
 function loadProfileState(id){try{const saved=JSON.parse(localStorage.getItem(profileDataKey(id)));return saved?merge(defaults,saved):structuredClone(defaults)}catch{return structuredClone(defaults)}}
 function merge(base,extra){return {...structuredClone(base),...extra,morning:{...base.morning,...(extra.morning||{})}}}
 function saveRegistry(){localStorage.setItem(PROFILE_STORAGE_KEY,JSON.stringify(profileRegistry))}
-function save(){if(activeProfile)localStorage.setItem(profileDataKey(activeProfile.id),JSON.stringify(state));flashSaved();updateScore()}
+function save(){if(activeProfile){localStorage.setItem(profileDataKey(activeProfile.id),JSON.stringify(state));window.LifeOSCloud?.queueSave(activeProfile,state)}flashSaved();updateScore()}
 function flashSaved(){const el=document.getElementById('savedNote');if(!el)return;el.textContent='Saved privately just now';clearTimeout(flashSaved.t);flashSaved.t=setTimeout(()=>el.textContent='Saved privately on this device',1300)}
 function createProfile({name,familyName,purpose,template='balanced'}){
   const profile={id:uid(),name:name.trim(),familyName:familyName.trim(),purpose:purpose.trim()||'Live intentionally. Improve continuously. Protect what matters.',principles:[...defaultPrinciples],createdAt:new Date().toISOString()};
@@ -64,7 +66,7 @@ function renderMorning(){const grid=document.getElementById('morningChecks');gri
 function updateScore(){const checks=[...Object.values(state.morning),...state.priorityDone,state.alcoholDates.includes(todayKey()),Boolean(state.dailyWin.trim()),Boolean(state.tinyStep.trim())];const score=Math.round(100*checks.filter(Boolean).length/checks.length);document.getElementById('dailyScore').textContent=`${score}%`;document.getElementById('scoreRing').style.setProperty('--score',`${score}%`)}
 function renderIdentity(){
   if(!activeProfile)return;
-  const wayName=`The ${activeProfile.familyName} Way`;
+  const wayName=familySpace?.name||`The ${activeProfile.familyName} Way`;
   document.getElementById('brandWay').textContent=wayName;
   document.getElementById('greetingName').textContent=activeProfile.name;
   document.getElementById('heroPurpose').textContent=activeProfile.purpose;
@@ -76,7 +78,7 @@ function renderIdentity(){
   const wayPrompt=[...document.getElementById('journalPrompt').options].find(option=>option.textContent.includes('Way?'));if(wayPrompt)wayPrompt.textContent=`How did I live ${wayName}?`;
 }
 function renderWay(){
-  const ownPrinciples=activeProfile?.principles?.length?activeProfile.principles:defaultPrinciples;
+  const ownPrinciples=familySpace?.principles?.length?familySpace.principles:(activeProfile?.principles?.length?activeProfile.principles:defaultPrinciples);
   const philosophies=[['Ikigai','Purpose',activeProfile?.purpose||'Live intentionally. Improve continuously. Protect what matters.'],...philosophyBase];
   document.getElementById('thorntonPrinciples').innerHTML=ownPrinciples.map(x=>`<li>${esc(x)}</li>`).join('');
   document.getElementById('philosophyGrid').innerHTML=philosophies.map((p,i)=>`<article class="card philosophy-card ${i===0?'full':''}"><header><h3>${p[0]}</h3><span>${p[1]}</span></header><p>${esc(p[2])}</p></article>`).join('')
@@ -88,7 +90,7 @@ function renderProfile(){
   document.getElementById('settingsName').value=activeProfile.name;
   document.getElementById('settingsFamily').value=activeProfile.familyName;
   document.getElementById('settingsPurpose').value=activeProfile.purpose;
-  document.getElementById('settingsPrinciples').value=(activeProfile.principles||defaultPrinciples).join('\n');
+  document.getElementById('settingsPrinciples').value=(familySpace?.principles||activeProfile.principles||defaultPrinciples).join('\n');
   document.getElementById('profileList').innerHTML=profileRegistry.items.map(item=>`<button type="button" class="profile-switch ${item.id===activeProfile.id?'active':''}" data-profile-id="${esc(item.id)}"><span>${esc(item.name.charAt(0).toUpperCase())}</span><div><strong>${esc(item.name)} ${esc(item.familyName)}</strong><small>${item.id===activeProfile.id?'Current profile':'Switch profile'}</small></div></button>`).join('');
   document.querySelectorAll('[data-profile-id]').forEach(button=>button.onclick=()=>{if(button.dataset.profileId===activeProfile.id)return;profileRegistry.activeId=button.dataset.profileId;saveRegistry();location.hash='#today';location.reload()});
 }
@@ -131,6 +133,36 @@ function exportCurrentProfile(){
   const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});const link=document.createElement('a');link.href=URL.createObjectURL(blob);link.download=`life-os-${activeProfile.name.toLowerCase()}-backup.json`;link.click();setTimeout(()=>URL.revokeObjectURL(link.href),1000);toast('Backup downloaded')
 }
 function navigate(){const target=(location.hash||'#today').slice(1);document.querySelectorAll('.view').forEach(v=>v.classList.toggle('active',v.id===target));document.querySelectorAll('.bottom-nav a').forEach(a=>a.classList.toggle('active',a.hash===`#${target}`));window.scrollTo({top:0,behavior:'smooth'})}
+function setCloudStatus(message,badge='Cloud ready'){document.getElementById('cloudStatus').textContent=message;document.getElementById('cloudBadge').textContent=badge}
+async function refreshFamilySpace(){
+  familySpace=await window.LifeOSCloud.family();const card=document.getElementById('familyCloudCard');card.hidden=!cloudSession;if(!cloudSession)return;
+  document.getElementById('familySetup').hidden=Boolean(familySpace);document.getElementById('familyConnected').hidden=!familySpace;
+  if(familySpace){document.getElementById('connectedFamilyName').textContent=familySpace.name;document.getElementById('familyShareCode').textContent=familySpace.inviteCode||'Ask a family owner for an invitation';document.getElementById('familyCloudStatus').textContent=`You are connected as ${familySpace.role}. Shared principles stay together; personal goals, health and journals remain private.`}
+  renderIdentity();renderWay();renderMorning();renderProfile();
+}
+async function applyCloudAccount(){
+  const account=await window.LifeOSCloud.current();cloudSession=account.session;
+  document.getElementById('cloudConnect').hidden=Boolean(cloudSession);document.getElementById('cloudSignOut').hidden=!cloudSession;document.getElementById('familyCloudCard').hidden=!cloudSession;
+  document.getElementById('cloudDelete').hidden=!cloudSession;
+  if(!cloudSession){setCloudStatus('Your profile is safe on this device. Connect an account to back it up and use it on your other devices.','Local only');familySpace=null;renderIdentity();renderWay();renderMorning();renderProfile();return}
+  setCloudStatus(`Signed in as ${cloudSession.user.email}. Your private Life OS is synchronised.`,'Synced');
+  const remote=await window.LifeOSCloud.load();
+  if(remote?.profile&&remote?.state){const existing=profileRegistry.items.find(item=>item.cloudUserId===cloudSession.user.id);const cloudProfile={...remote.profile,id:existing?.id||remote.profile.id};if(existing)Object.assign(existing,cloudProfile);else profileRegistry.items.push(cloudProfile);profileRegistry.activeId=cloudProfile.id;activeProfile=cloudProfile;state=merge(defaults,remote.state);saveRegistry();localStorage.setItem(profileDataKey(cloudProfile.id),JSON.stringify(state))}else if(activeProfile)await window.LifeOSCloud.save(activeProfile,state);
+  renderIdentity();renderPriorities();renderMorning();renderWay();renderHabits();renderGoals();renderJournal();renderProfile();await refreshFamilySpace();
+}
+function setupCloud(){
+  if(!window.LifeOSCloud?.configured){setCloudStatus('Cloud connection is being prepared. Your information is still saved privately on this device.','Local only');return}
+  const auth=document.getElementById('cloudAuth');document.getElementById('cloudConnect').onclick=()=>{auth.hidden=false;document.body.classList.add('modal-open');setTimeout(()=>document.getElementById('cloudEmail').focus(),50)};
+  document.getElementById('cloudAuthCancel').onclick=()=>{auth.hidden=true;document.body.classList.remove('modal-open')};
+  document.getElementById('cloudAuthForm').onsubmit=async e=>{e.preventDefault();const email=document.getElementById('cloudEmail').value.trim();try{await window.LifeOSCloud.signIn(email);auth.hidden=true;document.body.classList.remove('modal-open');toast('Check your email for the secure sign-in link')}catch(error){toast(error.message)}};
+  document.getElementById('cloudSignOut').onclick=async()=>{try{await window.LifeOSCloud.signOut();await applyCloudAccount();toast('Signed out')}catch(error){toast(error.message)}};
+  document.getElementById('cloudDelete').onclick=async()=>{if(!confirm('Permanently delete your cloud account and all synchronised information? Your local profile on this device will remain until you delete it separately.'))return;try{await window.LifeOSCloud.deleteAccount();await applyCloudAccount();toast('Cloud account deleted')}catch(error){toast(error.message)}};
+  document.getElementById('createFamilySpace').onclick=async()=>{const name=document.getElementById('familySpaceName').value.trim();if(!name)return toast('Give your family space a name');try{await window.LifeOSCloud.createFamily(name,activeProfile.principles||defaultPrinciples);await refreshFamilySpace();toast('Family space created')}catch(error){toast(error.message)}};
+  document.getElementById('joinFamilySpace').onclick=async()=>{const code=document.getElementById('familyInviteCode').value.trim();if(!code)return toast('Enter the invitation code');try{await window.LifeOSCloud.joinFamily(code);await refreshFamilySpace();toast('Family space joined')}catch(error){toast(error.message)}};
+  document.getElementById('copyFamilyCode').onclick=async()=>{if(!familySpace?.inviteCode)return toast('Ask a family owner for an invitation');try{await navigator.clipboard.writeText(familySpace.inviteCode);toast('Invitation code copied')}catch{toast(`Family code: ${familySpace.inviteCode}`)}};
+  window.LifeOSCloud.on(event=>{if(event.type==='synced')setCloudStatus(`Signed in as ${cloudSession?.user?.email||'your account'}. Your private Life OS is synchronised.`,'Synced');if(event.type.includes('signed_in'))applyCloudAccount().catch(error=>toast(error.message));if(event.type==='error')toast(`Cloud sync: ${event.message}`)});
+  applyCloudAccount().catch(error=>setCloudStatus(`Cloud needs attention: ${error.message}`,'Check cloud'));
+}
 function init(){resetDailyIfNeeded();const now=new Date();document.getElementById('dateLabel').textContent=now.toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long'}).toUpperCase();document.getElementById('dayPart').textContent=now.getHours()<12?'morning':now.getHours()<18?'afternoon':'evening';bindValue('greatDay','greatDay');bindValue('energy','energy');bindValue('mood','mood');bindValue('dailyWin','dailyWin');bindValue('tinyStep','tinyStep');['energy','mood'].forEach(id=>{const el=document.getElementById(id),out=document.getElementById(`${id}Value`);out.textContent=el.value;el.addEventListener('input',()=>out.textContent=el.value)});renderIdentity();renderPriorities();renderMorning();renderWay();renderHabits();renderGoals();renderJournal();renderProfile();setupVoiceInputs();updateScore();navigate();
   document.getElementById('alcoholToday').onclick=()=>{const key=todayKey();state.alcoholDates=state.alcoholDates.includes(key)?state.alcoholDates.filter(d=>d!==key):[...state.alcoholDates,key];save();renderHabits()};
   document.getElementById('cigarettesToday').oninput=e=>{state.cigarettesToday=Math.max(0,+e.target.value||0);save()};document.getElementById('cigaretteTarget').oninput=e=>{state.cigaretteTarget=Math.max(0,+e.target.value||0);save();renderHabits()};document.getElementById('cigMinus').onclick=()=>{state.cigarettesToday=Math.max(0,state.cigarettesToday-1);save();renderHabits()};document.getElementById('cigPlus').onclick=()=>{state.cigarettesToday++;save();renderHabits()};
@@ -139,13 +171,13 @@ function init(){resetDailyIfNeeded();const now=new Date();document.getElementByI
   document.getElementById('journalForm').onsubmit=e=>{e.preventDefault();state.journal.unshift({prompt:document.getElementById('journalPrompt').value,text:document.getElementById('journalText').value.trim(),time:new Date().toISOString()});document.getElementById('journalText').value='';save();renderJournal();toast('Journal entry saved')};
   document.getElementById('resetDay').onclick=()=>{if(confirm("Clear today's check-ins and priorities? Your goals and journal will stay safe.")){state={...state,greatDay:'',priorities:['','',''],priorityDone:[false,false,false],morning:Object.fromEntries(Object.keys(defaults.morning).map(k=>[k,false])),energy:7,mood:7,dailyWin:'',tinyStep:'',cigarettesToday:0};save();location.reload()}};
   document.getElementById('profileButton').onclick=()=>{location.hash='#profile'};
-  document.getElementById('profileForm').onsubmit=e=>{e.preventDefault();activeProfile.name=document.getElementById('settingsName').value.trim();activeProfile.familyName=document.getElementById('settingsFamily').value.trim();activeProfile.purpose=document.getElementById('settingsPurpose').value.trim();activeProfile.principles=document.getElementById('settingsPrinciples').value.split('\n').map(x=>x.trim()).filter(Boolean);saveRegistry();renderIdentity();renderWay();renderProfile();toast('Personalisation saved')};
+  document.getElementById('profileForm').onsubmit=async e=>{e.preventDefault();const previous={...activeProfile,principles:[...(activeProfile.principles||[])]};try{activeProfile.name=document.getElementById('settingsName').value.trim();activeProfile.familyName=document.getElementById('settingsFamily').value.trim();activeProfile.purpose=document.getElementById('settingsPurpose').value.trim();const principles=document.getElementById('settingsPrinciples').value.split('\n').map(x=>x.trim()).filter(Boolean);if(familySpace){await window.LifeOSCloud.saveFamilyPrinciples(familySpace.id,principles);familySpace.principles=principles}else activeProfile.principles=principles;saveRegistry();save();renderIdentity();renderWay();renderProfile();toast(familySpace?'Family principles saved for everyone':'Personalisation saved')}catch(error){Object.assign(activeProfile,previous);renderProfile();toast(error.message)}};
   document.getElementById('onboardingForm').onsubmit=e=>{e.preventDefault();createProfile({name:document.getElementById('onboardingName').value,familyName:document.getElementById('onboardingFamily').value,purpose:document.getElementById('onboardingPurpose').value,template:document.getElementById('onboardingTemplate').value});closeOnboarding();location.hash='#today';location.reload()};
   document.getElementById('addProfile').onclick=()=>{document.getElementById('onboardingForm').reset();showOnboarding(true)};document.getElementById('onboardingCancel').onclick=closeOnboarding;
   document.getElementById('exportProfile').onclick=exportCurrentProfile;
   document.getElementById('deleteProfile').onclick=()=>{if(!confirm(`Delete ${activeProfile.name}'s profile and all of its locally saved information? This cannot be undone.`))return;localStorage.removeItem(profileDataKey(activeProfile.id));profileRegistry.items=profileRegistry.items.filter(item=>item.id!==activeProfile.id);profileRegistry.activeId=profileRegistry.items[0]?.id||null;saveRegistry();location.hash='#today';location.reload()};
   document.getElementById('shareLifeOS').onclick=async()=>{const shareData={title:'Life OS',text:'I have been using Life OS to live more intentionally. Create your own private version here:',url:location.origin};try{if(navigator.share)await navigator.share(shareData);else{await navigator.clipboard.writeText(`${shareData.text} ${shareData.url}`);toast('Invitation link copied')}}catch(error){if(error.name!=='AbortError')toast('Copy this page link to share Life OS')}};
-  if(!activeProfile)showOnboarding(false);
+  setupCloud();if(!activeProfile)showOnboarding(false);
   window.addEventListener('hashchange',navigate);if('serviceWorker'in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
 }
 document.addEventListener('DOMContentLoaded',init);
