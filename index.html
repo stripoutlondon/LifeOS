@@ -14,9 +14,12 @@
   <div class="ambient ambient-one"></div><div class="ambient ambient-two"></div>
   <header class="topbar">
     <a class="brand" href="#today" aria-label="Life OS home">
-      <span class="brand-mark">L</span><span><strong>Life OS</strong><small>The Thornton Way</small></span>
+      <span class="brand-mark">L</span><span><strong>Life OS</strong><small id="brandWay">Your personal operating system</small></span>
     </a>
-    <button class="icon-button" id="resetDay" title="Start a clean day" aria-label="Reset today's check-ins">↻</button>
+    <div class="topbar-actions">
+      <button class="profile-button" id="profileButton" type="button" aria-label="Open your profile"><span id="profileInitial">?</span><small id="profileName">Set up</small></button>
+      <button class="icon-button" id="resetDay" title="Start a clean day" aria-label="Reset today's check-ins">↻</button>
+    </div>
   </header>
 
   <main>
@@ -24,8 +27,8 @@
       <div class="hero">
         <div>
           <p class="eyebrow" id="dateLabel"></p>
-          <h1>Good <span id="dayPart">morning</span>, Joe.</h1>
-          <p class="hero-copy">Build wealth. Protect your energy. Lead your family. Enjoy the day.</p>
+          <h1>Good <span id="dayPart">morning</span>, <span id="greetingName">there</span>.</h1>
+          <p class="hero-copy" id="heroPurpose">Live intentionally. Improve continuously. Protect what matters.</p>
         </div>
         <div class="score-ring" id="scoreRing" aria-label="Daily completion score"><strong id="dailyScore">0%</strong><small>today</small></div>
       </div>
@@ -54,12 +57,12 @@
           <label for="tinyStep">Tomorrow's tiny step</label><textarea id="tinyStep" rows="2" data-voice-label="tomorrow's tiny step" placeholder="Make it small enough to succeed."></textarea>
         </article>
       </section>
-      <p class="saved-note" id="savedNote">Saved on this device</p>
+      <p class="saved-note" id="savedNote">Saved privately on this device</p>
     </section>
 
     <section class="view" id="way" data-title="The Way">
-      <div class="page-intro"><p class="eyebrow">IDENTITY BEFORE ACTIVITY</p><h1>The Thornton Way</h1><p>A family code to live, teach and remember.</p></div>
-      <article class="principles-card"><div class="crest">T</div><ol id="thorntonPrinciples"></ol><p class="motto">Build wisely. Love deeply. Live fully.</p></article>
+      <div class="page-intro"><p class="eyebrow">IDENTITY BEFORE ACTIVITY</p><h1 id="familyWayTitle">Your Way</h1><p id="familyWayIntro">A personal code to live, teach and remember.</p></div>
+      <article class="principles-card"><div class="crest" id="familyCrest">Y</div><ol id="thorntonPrinciples"></ol><p class="motto">Build wisely. Love deeply. Live fully.</p></article>
       <div class="philosophy-grid" id="philosophyGrid"></div>
     </section>
 
@@ -71,7 +74,7 @@
       </div>
       <article class="card target-card"><div><label for="cigaretteTarget">Current daily target</label><p>Reduce gradually. When the current number feels stable, lower it by one.</p></div><input id="cigaretteTarget" type="number" min="0" max="99" value="10"></article>
       <section class="section-block"><div class="section-heading"><div><p class="eyebrow">NOTICE THE PATTERN</p><h2>Trigger log</h2></div><button class="text-button" id="clearTriggers">Clear</button></div>
-        <form class="card trigger-form" id="triggerForm"><div class="field-row"><div><label for="triggerType">Trigger</label><select id="triggerType"><option>Stress</option><option>Alcohol</option><option>Cigarette</option><option>Food</option><option>YouTube</option><option>Conflict</option><option>Other</option></select></div><div><label for="triggerIntensity">Intensity</label><select id="triggerIntensity"><option>Low</option><option>Medium</option><option>High</option></select></div></div><label for="triggerNote">What happened, and what did you choose?</label><textarea id="triggerNote" rows="3" required data-voice-label="trigger reflection" placeholder="Dominic criticised me; I paused and went for a walk…"></textarea><button class="primary-button" type="submit">Add reflection</button></form>
+        <form class="card trigger-form" id="triggerForm"><div class="field-row"><div><label for="triggerType">Trigger</label><select id="triggerType"><option>Stress</option><option>Alcohol</option><option>Cigarette</option><option>Food</option><option>YouTube</option><option>Conflict</option><option>Other</option></select></div><div><label for="triggerIntensity">Intensity</label><select id="triggerIntensity"><option>Low</option><option>Medium</option><option>High</option></select></div></div><label for="triggerNote">What happened, and what did you choose?</label><textarea id="triggerNote" rows="3" required data-voice-label="trigger reflection" placeholder="Something unsettled me; I paused and chose a better response…"></textarea><button class="primary-button" type="submit">Add reflection</button></form>
         <div class="timeline" id="triggerList"></div>
       </section>
     </section>
@@ -88,6 +91,22 @@
       <form class="card journal-form" id="journalForm"><label for="journalPrompt">Today's reflection</label><select id="journalPrompt"><option>Three things I'm grateful for</option><option>What went well today?</option><option>What did today teach me?</option><option>How did I live The Thornton Way?</option><option>What am I building for my family?</option></select><label for="journalText">Write your reflection</label><textarea id="journalText" rows="6" required data-voice-label="journal reflection" placeholder="Write without judging it…"></textarea><button class="primary-button" type="submit">Save entry</button></form>
       <div class="journal-list" id="journalList"></div>
     </section>
+
+    <section class="view" id="profile" data-title="Profile">
+      <div class="page-intro"><p class="eyebrow">MAKE IT YOURS</p><h1>Your Life OS</h1><p>Personalise your identity, purpose and family code. Your private entries stay separate from every other profile.</p></div>
+      <div class="profile-grid">
+        <article class="card profile-summary"><div class="large-avatar" id="largeAvatar">?</div><div><h2 id="profileHeading">Your profile</h2><p id="storageStatus">Saved privately on this device</p></div></article>
+        <form class="card profile-form" id="profileForm">
+          <div class="field-row"><div><label for="settingsName">Your first name</label><input id="settingsName" required autocomplete="given-name"></div><div><label for="settingsFamily">Family name</label><input id="settingsFamily" required autocomplete="family-name"></div></div>
+          <label for="settingsPurpose">Your purpose</label><textarea id="settingsPurpose" rows="3" data-voice-label="your purpose"></textarea>
+          <label for="settingsPrinciples">Your principles <small>One per line</small></label><textarea id="settingsPrinciples" rows="8" data-voice-label="your family principles"></textarea>
+          <button class="primary-button" type="submit">Save personalisation</button>
+        </form>
+        <article class="card share-card"><p class="eyebrow">INVITE OTHERS</p><h2>Share Life OS</h2><p>Friends can create their own completely separate Life OS. Their information will never appear in yours.</p><button class="secondary-button" id="shareLifeOS" type="button">Share invitation</button></article>
+        <article class="card account-card"><p class="eyebrow">THIS DEVICE</p><h2>Profiles & backup</h2><p>Create another private profile on this device, or download a backup before moving phones.</p><div class="button-row"><button class="secondary-button" id="addProfile" type="button">Add profile</button><button class="secondary-button" id="exportProfile" type="button">Download backup</button><button class="danger-button" id="deleteProfile" type="button">Delete current profile</button></div><div class="profile-list" id="profileList"></div></article>
+        <article class="card cloud-card"><div><p class="eyebrow">CLOUD READY</p><h2>Accounts and family spaces</h2><p>The app is prepared for secure sign-in, cross-device sync and invitation-only family sharing. Connecting the cloud service is the next deployment step.</p></div><span class="status-pill">Local-first beta</span></article>
+      </div>
+    </section>
   </main>
 
   <nav class="bottom-nav" aria-label="Main navigation">
@@ -97,6 +116,19 @@
     <a href="#goals"><span>◎</span><small>Goals</small></a>
     <a href="#journal"><span>≡</span><small>Journal</small></a>
   </nav>
+  <div class="onboarding" id="onboarding" hidden>
+    <div class="onboarding-backdrop"></div>
+    <section class="onboarding-panel" role="dialog" aria-modal="true" aria-labelledby="onboardingTitle">
+      <div class="onboarding-mark">L</div><p class="eyebrow">WELCOME TO LIFE OS</p><h1 id="onboardingTitle">Build a life that feels like yours.</h1><p>Start with your identity. You can change everything later.</p>
+      <form id="onboardingForm">
+        <div class="field-row"><div><label for="onboardingName">Your first name</label><input id="onboardingName" required autocomplete="given-name" placeholder="e.g. Olga"></div><div><label for="onboardingFamily">Family name</label><input id="onboardingFamily" required autocomplete="family-name" placeholder="e.g. Thornton"></div></div>
+        <label for="onboardingPurpose">What matters most to you?</label><textarea id="onboardingPurpose" rows="3" data-voice-label="what matters most to you" placeholder="Family, health, freedom, purpose…"></textarea>
+        <label for="onboardingTemplate">Choose a starting point</label><select id="onboardingTemplate"><option value="balanced">Balanced life</option><option value="parent">Present parent</option><option value="entrepreneur">Entrepreneur & financial freedom</option><option value="health">Health and energy reset</option></select>
+        <button class="primary-button" type="submit">Create my Life OS</button>
+      </form>
+      <button class="text-button onboarding-cancel" id="onboardingCancel" type="button" hidden>Cancel</button>
+    </section>
+  </div>
   <div class="toast" id="toast" role="status"></div>
   <script src="app.js" defer></script>
 </body>
