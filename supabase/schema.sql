@@ -9,12 +9,16 @@ create table if not exists public.profiles (
   life_mode text not null default 'personal' check (life_mode in ('personal','family','both')),
   purpose text not null default '',
   principles jsonb not null default '[]'::jsonb,
+  routine_config jsonb not null default '{}'::jsonb,
+  trackers jsonb not null default '{}'::jsonb,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
 
 alter table public.profiles add column if not exists way_name text not null default '';
 alter table public.profiles add column if not exists life_mode text not null default 'personal';
+alter table public.profiles add column if not exists routine_config jsonb not null default '{}'::jsonb;
+alter table public.profiles add column if not exists trackers jsonb not null default '{}'::jsonb;
 
 create table if not exists public.life_data (
   user_id uuid primary key references auth.users(id) on delete cascade,

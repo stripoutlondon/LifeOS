@@ -2,7 +2,7 @@
 
 A zero-build, mobile-first personal operating system centred on identity, relationships, health, goals and continuous improvement.
 
-The commercial beta includes neutral onboarding, personal or family modes, editable purpose and principles, a complete morning/daytime/evening rhythm, private cloud accounts, invitation-only family spaces, separate personal goals/journals/health data, shared family principles, voice input, downloadable profile backup and in-app account deletion.
+The commercial beta includes neutral onboarding, personal or family modes, editable purpose and principles, fully editable morning/daytime/evening routines, optional specialist trackers, user-created daily habits, seven-day insights, private cloud accounts, invitation-only family spaces, separate personal goals/journals/health data, shared family principles, voice input, downloadable profile backup and in-app account deletion.
 
 ## Preserved personalised edition
 

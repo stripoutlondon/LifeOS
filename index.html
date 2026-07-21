@@ -52,11 +52,7 @@
 
       <section class="section-block daytime-section">
         <div class="section-heading"><div><p class="eyebrow">DAYTIME</p><h2>Make meaningful progress</h2></div><span class="soft-label">Work · life · purpose</span></div>
-        <div class="daytime-grid">
-          <article class="card daytime-check" data-daytime-card="focusDone"><span>◎</span><div><strong>Focused progress</strong><p>Give one important outcome your full attention.</p></div><input class="custom-check" id="daytime-focus" type="checkbox" aria-label="Complete a focused progress session"></article>
-          <article class="card daytime-check" data-daytime-card="resetDone"><span>↺</span><div><strong>Pause and reset</strong><p>Step back, breathe and choose what matters next.</p></div><input class="custom-check" id="daytime-reset" type="checkbox" aria-label="Complete a daytime reset"></article>
-          <article class="card daytime-check" data-daytime-card="finishDone"><span>✓</span><div><strong>Finish intentionally</strong><p>Close the workday or main activity when planned.</p></div><input class="custom-check" id="daytime-finish" type="checkbox" aria-label="Finish the day when planned"></article>
-        </div>
+        <div class="daytime-grid" id="daytimeChecks"></div>
         <article class="card daytime-notes"><label for="dayProgress">What did you move forward?</label><textarea id="dayProgress" rows="2" data-voice-label="what you moved forward" placeholder="Make progress visible…"></textarea><label for="dayNextAction">What is the next clear action?</label><textarea id="dayNextAction" rows="2" data-voice-label="the next clear action" placeholder="Small, specific and easy to start…"></textarea></article>
       </section>
 
@@ -69,6 +65,7 @@
           <label for="tinyStep">Tomorrow's tiny step</label><textarea id="tinyStep" rows="2" data-voice-label="tomorrow's tiny step" placeholder="Make it small enough to succeed."></textarea>
         </article>
       </section>
+      <section class="section-block"><div class="section-heading"><div><p class="eyebrow">THIS WEEK</p><h2>See the pattern</h2></div><span class="soft-label">Last 7 days</span></div><article class="card weekly-insights" id="weeklyInsights"></article></section>
       <p class="saved-note" id="savedNote">Saved privately on this device</p>
     </section>
 
@@ -81,10 +78,11 @@
     <section class="view" id="habits" data-title="Habits">
       <div class="page-intro"><p class="eyebrow">CONTINUE, DON'T RESTART</p><h1>Health & habits</h1><p>Small honest choices, repeated. Never perfection.</p></div>
       <div class="metric-grid">
-        <article class="metric-card alcohol-card"><span class="metric-icon">◇</span><small>Alcohol-free streak</small><strong><span id="alcoholStreak">0</span> days</strong><button class="primary-button" id="alcoholToday">Mark today alcohol-free</button></article>
-        <article class="metric-card"><span class="metric-icon">↘</span><small>Cigarettes today</small><strong><input id="cigarettesToday" type="number" min="0" max="99" inputmode="numeric" value="0"> <em>/ <span id="cigaretteTargetLabel">10</span></em></strong><div class="stepper"><button id="cigMinus" aria-label="Subtract cigarette">−</button><button id="cigPlus" aria-label="Add cigarette">+</button></div></article>
+        <article class="metric-card alcohol-card" id="alcoholTrackerCard"><span class="metric-icon">◇</span><small>Alcohol-free streak</small><strong><span id="alcoholStreak">0</span> days</strong><button class="primary-button" id="alcoholToday">Mark today alcohol-free</button></article>
+        <article class="metric-card" id="cigaretteTrackerCard"><span class="metric-icon">↘</span><small>Cigarettes today</small><strong><input id="cigarettesToday" type="number" min="0" max="99" inputmode="numeric" value="0"> <em>/ <span id="cigaretteTargetLabel">10</span></em></strong><div class="stepper"><button id="cigMinus" aria-label="Subtract cigarette">−</button><button id="cigPlus" aria-label="Add cigarette">+</button></div></article>
       </div>
-      <article class="card target-card"><div><label for="cigaretteTarget">Current daily target</label><p>Reduce gradually. When the current number feels stable, lower it by one.</p></div><input id="cigaretteTarget" type="number" min="0" max="99" value="10"></article>
+      <article class="card target-card" id="cigaretteTargetCard"><div><label for="cigaretteTarget">Current daily target</label><p>Reduce gradually. When the current number feels stable, lower it by one.</p></div><input id="cigaretteTarget" type="number" min="0" max="99" value="10"></article>
+      <section class="section-block"><div class="section-heading"><div><p class="eyebrow">MAKE IT YOURS</p><h2>Your daily habits</h2></div></div><form class="card inline-habit-form" id="customHabitForm"><label for="customHabitName">Add a habit</label><div class="inline-action"><input id="customHabitName" required data-voice-label="new daily habit" placeholder="Read, exercise, practise, connect…"><button class="secondary-button" type="submit">Add</button></div></form><div class="habit-list" id="customHabitList"></div></section>
       <section class="section-block"><div class="section-heading"><div><p class="eyebrow">NOTICE THE PATTERN</p><h2>Trigger log</h2></div><button class="text-button" id="clearTriggers">Clear</button></div>
         <form class="card trigger-form" id="triggerForm"><div class="field-row"><div><label for="triggerType">Trigger</label><select id="triggerType"><option>Stress</option><option>Alcohol</option><option>Cigarette</option><option>Food</option><option>YouTube</option><option>Conflict</option><option>Other</option></select></div><div><label for="triggerIntensity">Intensity</label><select id="triggerIntensity"><option>Low</option><option>Medium</option><option>High</option></select></div></div><label for="triggerNote">What happened, and what did you choose?</label><textarea id="triggerNote" rows="3" required data-voice-label="trigger reflection" placeholder="Something unsettled me; I paused and chose a better response…"></textarea><button class="primary-button" type="submit">Add reflection</button></form>
         <div class="timeline" id="triggerList"></div>
@@ -113,6 +111,11 @@
           <div class="field-row"><div><label for="settingsLifeMode">This Life OS is for</label><select id="settingsLifeMode"><option value="personal">Me</option><option value="family">My family</option><option value="both">Me and my family</option></select></div><div><label for="settingsWayName">Name for your Way <small>Optional</small></label><input id="settingsWayName" placeholder="My Way or The Smith Way"></div></div>
           <label for="settingsPurpose">Your purpose</label><textarea id="settingsPurpose" rows="3" data-voice-label="your purpose"></textarea>
           <label for="settingsPrinciples">Your principles <small>One per line</small></label><textarea id="settingsPrinciples" rows="8" data-voice-label="your family principles"></textarea>
+          <div class="settings-divider"><p class="eyebrow">YOUR DAILY RHYTHM</p><p>Add, remove or reorder lines. For daytime items, add an optional description after a | character.</p></div>
+          <label for="settingsMorningRoutine">Morning routine <small>One item per line</small></label><textarea id="settingsMorningRoutine" rows="7" data-voice-label="your morning routine"></textarea>
+          <label for="settingsDaytimeRoutine">Daytime routine <small>One item per line</small></label><textarea id="settingsDaytimeRoutine" rows="5" data-voice-label="your daytime routine"></textarea>
+          <div class="field-row"><div><label for="settingsEveningWin">Evening reflection</label><input id="settingsEveningWin"></div><div><label for="settingsEveningStep">Next-day prompt</label><input id="settingsEveningStep"></div></div>
+          <div class="settings-divider"><p class="eyebrow">OPTIONAL TRACKERS</p></div><label class="toggle-setting"><input id="settingsAlcoholTracker" type="checkbox"> Show alcohol-free tracker</label><label class="toggle-setting"><input id="settingsCigaretteTracker" type="checkbox"> Show cigarette-reduction tracker</label>
           <button class="primary-button" type="submit">Save personalisation</button>
         </form>
         <article class="card share-card"><p class="eyebrow">INVITE OTHERS</p><h2>Share Life OS</h2><p>Friends can create their own completely separate Life OS. Their information will never appear in yours.</p><button class="secondary-button" id="shareLifeOS" type="button">Share invitation</button></article>
