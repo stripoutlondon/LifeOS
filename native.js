@@ -1,4 +1,11 @@
 (() => {
+  // Load optional web enhancements without changing the core Life OS data model.
+  const loadScript=src=>{if(document.querySelector(`script[src="${src}"]`))return;const s=document.createElement('script');s.src=src;s.defer=true;document.head.appendChild(s)};
+  const loadStyle=href=>{if(document.querySelector(`link[href="${href}"]`))return;const l=document.createElement('link');l.rel='stylesheet';l.href=href;document.head.appendChild(l)};
+  loadStyle('lifeos-next.css');
+  loadScript('lifeos-next.js');
+  loadScript('voice-everywhere.js');
+
   const capacitor = window.Capacitor;
   const isNative = Boolean(capacitor?.isNativePlatform?.());
   document.documentElement.classList.toggle('native-app',isNative);
